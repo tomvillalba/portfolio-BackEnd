@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import com.example.demo.models.HardSkillsModel;
 import com.example.demo.services.HardSkillsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,12 +27,14 @@ public class HardSkillsController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public String eliminarPorId(@PathVariable("id") Integer id) {
+    public ResponseEntity<RespuestaEliminar> eliminarPorId(@PathVariable("id") Integer id) {
         boolean ok = this.hardSkillsService.eliminarHardSkill(id);
         if (ok) {
-            return "Se eliminó el hard skill con id " + id;
+            RespuestaEliminar respuesta = new RespuestaEliminar("Se eliminó el hardskill con id " + id);
+            return ResponseEntity.ok(respuesta);
         } else {
-            return "No se pudo eliminar el hard skill con id " + id;
+            RespuestaEliminar respuesta = new RespuestaEliminar("No se pudo eliminar el hardskill con id " + id);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 }

@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import com.example.demo.models.InformacionPersonalModel;
 import com.example.demo.services.InformacionPersonalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,13 +26,15 @@ public class InformacionPersonalController {
         return informacionPersonalService.guardarInformacionPersonal(informacionPersonal);
     }
 
-    @DeleteMapping("/{id}")
-    public String eliminarInformacionPersonal(@PathVariable("id") Long id){
-        boolean ok = informacionPersonalService.eliminarInformacionPersonal(id);
-        if (ok){
-            return "Se eliminó la información personal con id " + id;
-        }else{
-            return "No se pudo eliminar la información personal con id " + id;
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<RespuestaEliminar> eliminarPorId(@PathVariable("id") Long id) {
+        boolean ok = this.informacionPersonalService.eliminarInformacionPersonal(id);
+        if (ok) {
+            RespuestaEliminar respuesta = new RespuestaEliminar("Se eliminó la informacion con id " + id);
+            return ResponseEntity.ok(respuesta);
+        } else {
+            RespuestaEliminar respuesta = new RespuestaEliminar("No se pudo eliminar la informacion con id " + id);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuesta);
         }
     }
 
